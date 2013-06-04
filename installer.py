@@ -36,201 +36,12 @@ class Installer:
     #######################################
     # Languages
     #######################################
-
-    #
-    # Dart
-    #
-    self.__run_command("curl https://storage.googleapis.com/dart-editor-archive-integration/latest/dartsdk-linux-64.tar.gz | tar xvz")
-
-    #
-    # Erlang
-    #
-    self.__run_command("sudo cp ../config/erlang.list /etc/apt/sources.list.d/erlang.list")
-    self.__run_command("wget -O - http://binaries.erlang-solutions.com/debian/erlang_solutions.asc | sudo apt-key add -")
-    self.__run_command("sudo apt-get update")
-    self.__run_command("sudo apt-get install esl-erlang", True)
-
-    #
-    # Python
-    #
-
-    self.__run_command("curl -L http://bitbucket.org/pypy/pypy/downloads/pypy-2.0-linux64.tar.bz2 | tar xvj")
-    self.__run_command("curl http://www.python.org/ftp/python/2.7.4/Python-2.7.4.tgz | tar xvz")
-    self.__run_command("./configure", cwd="Python-2.7.4")
-    self.__run_command("make -j", cwd="Python-2.7.4")
-    self.__run_command("sudo make install", cwd="Python-2.7.4")
-    self.__run_command("curl https://pypi.python.org/packages/source/d/distribute/distribute-0.6.38.tar.gz | tar xvz")
-    # run pypy before python. (`setup.py install` fails after `sudo setup.py install`)
-    self.__run_command("../pypy-2.0/bin/pypy setup.py install", cwd="distribute-0.6.38")
-    self.__run_command("sudo python setup.py install", cwd="distribute-0.6.38")
-    self.__run_command("curl https://pypi.python.org/packages/source/p/pip/pip-1.3.1.tar.gz | tar xvz")
-    self.__run_command("../pypy-2.0/bin/pypy setup.py install", cwd="pip-1.3.1")
-    self.__run_command("sudo python setup.py install", cwd="pip-1.3.1")
-    self.__run_command("sudo pip install MySQL-python==1.2.4")
-    self.__run_command("sudo pip install simplejson==3.0.7")
-    self.__run_command("curl http://initd.org/psycopg/tarballs/PSYCOPG-2-5/psycopg2-2.5.tar.gz | tar xvz")
-    self.__run_command("sudo python setup.py install", cwd="psycopg2-2.5")
-    self.__run_command("git clone https://github.com/iiilx/django-psycopg2-pool.git")
-    self.__run_command("sudo python setup.py install", cwd="django-psycopg2-pool")
-    self.__run_command("sudo pip install --upgrade numpy==1.7.1")
-    self.__run_command("pypy-2.0/bin/pip install PyMySQL==0.5")
-
-    #
-    # nodejs
-    #
-
-    self.__run_command("curl http://nodejs.org/dist/v0.10.8/node-v0.10.8-linux-x64.tar.gz | tar xvz")
-
     #
     # Java
     #
 
     self.__run_command("sudo apt-get install openjdk-7-jdk", True)
     self.__run_command("sudo apt-get remove --purge openjdk-6-jre openjdk-6-jre-headless", True)
-
-    #
-    # Ruby/JRuby
-    #
-
-    self.__run_command("curl -L get.rvm.io | bash -s head")
-    self.__run_command("echo rvm_auto_reload_flag=2 >> ~/.rvmrc")
-    subprocess.call(["bash", "-c", "source ~/.rvm/scripts/'rvm' && rvm install 2.0.0-p0"])
-    subprocess.call(["bash", "-c", "source ~/.rvm/scripts/'rvm' && rvm 2.0.0-p0 do gem install bundler"])
-    subprocess.call(["bash", "-c", "source ~/.rvm/scripts/'rvm' && rvm install jruby-1.7.4"])
-    subprocess.call(["bash", "-c", "source ~/.rvm/scripts/'rvm' && rvm jruby-1.7.4 do gem install bundler"])
-
-    # We need a newer version of jruby-rack
-    self.__run_command("git clone git://github.com/jruby/jruby-rack.git")
-    subprocess.call(["bash", "-c", "cd installs/jruby-rack && source ~/.rvm/scripts/'rvm' && rvm jruby-1.7.4 do bundle install"])
-    subprocess.call(["bash", "-c", "cd installs/jruby-rack && source ~/.rvm/scripts/'rvm' && rvm jruby-1.7.4 do jruby -S bundle exec rake clean gem SKIP_SPECS=true"])
-    subprocess.call(["bash", "-c", "cd installs/jruby-rack/target && source ~/.rvm/scripts/'rvm' && rvm jruby-1.7.4 do gem install jruby-rack-1.2.0.SNAPSHOT.gem"])
-
-    #
-    # go
-    #
-
-    self.__run_command("curl http://go.googlecode.com/files/go1.1.linux-amd64.tar.gz | tar xvz")
-
-    #
-    # Perl
-    #
-    
-    self.__run_command("curl http://downloads.activestate.com/ActivePerl/releases/5.16.3.1603/ActivePerl-5.16.3.1603-x86_64-linux-glibc-2.3.5-296746.tar.gz | tar xvz");
-    self.__run_command("sudo ./install.sh --license-accepted --prefix /opt/ActivePerl-5.16 --no-install-html", cwd="ActivePerl-5.16.3.1603-x86_64-linux-glibc-2.3.5-296746", send_yes=True)
-    self.__run_command("curl -L http://cpanmin.us | perl - --sudo App::cpanminus")
-    self.__run_command("cpanm -f -S DBI DBD::mysql Kelp Dancer Mojolicious Kelp::Module::JSON::XS Dancer::Plugin::Database Starman Plack JSON Web::Simple DBD::Pg JSON::XS EV HTTP::Parser::XS Monoceros")
-
-    #
-    # php
-    #
-
-    self.__run_command("wget --trust-server-names http://www.php.net/get/php-5.4.13.tar.gz/from/us1.php.net/mirror")
-    self.__run_command("tar xvf php-5.4.13.tar.gz")
-    self.__run_command("./configure --with-pdo-mysql --with-mysql --with-mcrypt --enable-intl --enable-mbstring --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data", cwd="php-5.4.13")
-    self.__run_command("make", cwd="php-5.4.13")
-    self.__run_command("sudo make install", cwd="php-5.4.13")
-    self.__run_command("printf \"\\n\" | sudo pecl install apc-beta", cwd="php-5.4.13")
-    self.__run_command("sudo cp ../config/php.ini /usr/local/lib/php.ini")
-    self.__run_command("sudo cp ../config/php-fpm.conf /usr/local/lib/php-fpm.conf")
-    self.__run_command("rm php-5.4.13.tar.gz")
-
-    # Composer
-    self.__run_command("curl -sS https://getcomposer.org/installer | php -- --install-dir=bin")
-
-    # Phalcon
-    self.__run_command("git clone git://github.com/phalcon/cphalcon.git")
-    self.__run_command("sudo ./install", cwd="cphalcon/build")
-
-    # YAF
-    self.__run_command("sudo pecl install yaf")
-
-    #
-    # Haskell
-    #
-
-    self.__run_command("sudo apt-get install ghc cabal-install", True)
-
-    #
-    # RingoJs
-    #
-    self.__run_command("wget http://www.ringojs.org/downloads/ringojs_0.9-1_all.deb")
-    self.__run_command("sudo apt-get install jsvc", True)
-    self.__run_command("sudo dpkg -i ringojs_0.9-1_all.deb", True)
-    self.__run_command("rm ringojs_0.9-1_all.deb")
-    self.__run_command("sudo ringo-admin install oberhamsi/sql-ringojs-client")
-    self.__run_command("sudo ringo-admin install ringo/stick")
-    self.__run_command("sudo ringo-admin install oberhamsi/reinhardt")
-    self.__run_command("sudo ringo-admin install grob/ringo-sqlstore")
-    self.__run_command("sudo ringo-admin install amigrave/ringo-mongodb")
-
-    #
-    # Mono
-    #
-    self.__run_command("git clone git://github.com/mono/mono")
-    self.__run_command("git checkout mono-3.0.10", cwd="mono")
-    self.__run_command("./autogen.sh --prefix=/usr/local", cwd="mono")
-    self.__run_command("make get-monolite-latest", cwd="mono")
-    self.__run_command("make EXTERNAL_MCS=${PWD}/mcs/class/lib/monolite/gmcs.exe", cwd="mono")
-    self.__run_command("sudo make install", cwd="mono")
-    
-    self.__run_command("mozroots --import --sync")
-
-    self.__run_command("git clone git://github.com/mono/xsp")
-    self.__run_command("git checkout 3.0", cwd="xsp")
-    self.__run_command("./autogen.sh --prefix=/usr/local", cwd="xsp")
-    self.__run_command("make", cwd="xsp")
-    self.__run_command("sudo make install", cwd="xsp")
-    
-    # 
-    # Nimrod
-    # 
-    self.__run_command("wget http://www.nimrod-code.org/download/nimrod_0.9.2.zip")
-    self.__run_command("unzip nimrod_0.9.2.zip")
-    self.__run_command("chmod +x build.sh", cwd="nimrod")
-    self.__run_command("./build.sh", cwd="nimrod")
-    self.__run_command("chmod +x install.sh", cwd="nimrod")
-    self.__run_command("sudo ./install.sh /usr/bin", cwd="nimrod")
-    
-    #######################################
-    # Webservers
-    #######################################
-
-    #
-    # Nginx
-    #
-    self.__run_command("curl http://nginx.org/download/nginx-1.4.1.tar.gz | tar xvz")
-    self.__run_command("./configure", cwd="nginx-1.4.1")
-    self.__run_command("make", cwd="nginx-1.4.1")
-    self.__run_command("sudo make install", cwd="nginx-1.4.1")
-
-    #
-    # Openresty (nginx with openresty stuff)
-    #
-    self.__run_command("curl http://openresty.org/download/ngx_openresty-1.2.7.5.tar.gz | tar xvz")
-    self.__run_command("./configure --with-luajit", cwd="ngx_openresty-1.2.7.5")
-    self.__run_command("make", cwd="ngx_openresty-1.2.7.5")
-    self.__run_command("sudo make install", cwd="ngx_openresty-1.2.7.5")
-
-    #
-    # Gunicorn
-    #
-
-    self.__run_command("sudo easy_install -U 'gunicorn==0.17.4'")
-    self.__run_command("sudo pip install --upgrade meinheld")
-    self.__run_command("sudo easy_install -U 'eventlet==0.12.1'")
-    self.__run_command("sudo pip install --upgrade 'gevent==0.13.8'")
-
-    #
-    # Resin
-    #
-
-    self.__run_command("sudo cp -r /usr/lib/jvm/java-1.7.0-openjdk-amd64/include /usr/lib/jvm/java-1.7.0-openjdk-amd64/jre/bin/")
-    self.__run_command("curl http://www.caucho.com/download/resin-4.0.36.tar.gz | tar xvz")
-    self.__run_command("./configure --prefix=`pwd`", cwd="resin-4.0.36")
-    self.__run_command("make", cwd="resin-4.0.36")
-    self.__run_command("make install", cwd="resin-4.0.36")
-    self.__run_command("mv conf/resin.properties conf/resin.properties.orig", cwd="resin-4.0.36")
-    self.__run_command("cat ../config/resin.properties > resin-4.0.36/conf/resin.properties")
 
     ##############################################################
     #
@@ -239,73 +50,18 @@ class Installer:
     ##############################################################
 
     ##############################
-    # Tornado
-    ##############################
-    packages = "tornado==3.0.1 motor==0.1 pymongo==2.5"
-    self.__run_command("sudo pip install " + packages)
-    self.__run_command("pypy-2.0/bin/pip install " + packages)
-
-    ##############################
-    # Django
-    ##############################
-    self.__run_command("curl http://www.djangoproject.com/m/releases/1.4/Django-1.4.tar.gz | tar xvz")
-    self.__run_command("sudo rm -rf /usr/local/lib/python2.7/site-packages/django")
-    self.__run_command("sudo python setup.py install", cwd="Django-1.4")
-    self.__run_command("sudo easy_install -U 'ujson==1.30'")
-
-    ##############################
-    # Grails
-    ##############################
-    self.__run_command("wget http://dist.springframework.org.s3.amazonaws.com/release/GRAILS/grails-2.1.1.zip")
-    self.__run_command("unzip -o grails-2.1.1.zip")
-    self.__run_command("rm grails-2.1.1.zip")
-
-
-    ##############################
-    # Flask
-    ##############################
-    packages = "flask==0.9 flask-sqlalchemy==0.16 sqlalchemy==0.8.1 jinja2==2.6 werkzeug==0.8.3"
-    self.__run_command("sudo pip install " + packages)
-    self.__run_command("pypy-2.0/bin/pip install " + packages)
-
-    ##############################
-    # Bottle
-    ##############################
-    self.__run_command("sudo pip install bottle bottle-sqlalchemy")
-
-    ##############################
-    # Play 2
+    # Play 2.1.2
     ##############################
     self.__run_command("wget http://downloads.typesafe.com/play/2.1.2-RC1/play-2.1.2-RC1.zip")
     self.__run_command("unzip -o play-2.1.2-RC1.zip")
     self.__run_command("rm play-2.1.2-RC1.zip")
 
     ##############################
-    # Play 1
+    # Play 2.0.4
     ##############################
-    self.__run_command("wget http://downloads.typesafe.com/releases/play-1.2.5.zip")
-    self.__run_command("unzip -o play-1.2.5.zip")
-    self.__run_command("rm play-1.2.5.zip")
-    self.__run_command("mv play-1.2.5/play play-1.2.5/play1")
-
-    # siena
-    self.__run_command("play-1.2.5/play1 install siena", send_yes=True)
-
-    ##############################
-    # Vert.x
-    ##############################
-    self.__run_command("curl http://vertx.io/downloads/vert.x-1.3.1.final.tar.gz | tar xvz")
-
-    ##############################
-    # Yesod
-    ##############################
-    self.__run_command("cabal update")
-    self.__run_command("cabal install yesod persistent-mysql")
-
-    ##############################
-    # Jester
-    ##############################
-    self.__run_command("git clone git://github.com/dom96/jester.git jester/jester")
+    self.__run_command("wget http://downloads.typesafe.com/play/2.0.4/play-2.0.4.zip")
+    self.__run_command("unzip -o play-2.0.4.zip")
+    self.__run_command("rm play-2.0.4.zip")
 
     ##############################################################
     #
