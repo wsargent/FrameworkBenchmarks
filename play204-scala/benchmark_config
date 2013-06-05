@@ -1,5 +1,5 @@
 {
-  "framework": "play-scala204",
+  "framework": "play204-scala",
   "tests": [{
     "default": {
       "setup_file": "setup",
