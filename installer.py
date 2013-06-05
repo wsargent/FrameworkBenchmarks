@@ -59,7 +59,7 @@ class Installer:
     ##############################
     # Play 2.0.4
     ##############################
-    self.__run_command("wget http://downloads.typesafe.com/play/2.0.4/play-2.0.4.zip")
+    self.__run_command("wget http://downloads.typesafe.com/releases/play-2.0.4.zip")
     self.__run_command("unzip -o play-2.0.4.zip")
     self.__run_command("rm play-2.0.4.zip")
 
